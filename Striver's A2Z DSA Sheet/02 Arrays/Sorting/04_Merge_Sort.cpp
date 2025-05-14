@@ -1,66 +1,71 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
 
-void merge(vector<int> &arr, int low, int mid, int high) {
-    vector<int> temp; // temporary array
-    int left = low;      // starting index of left half of arr
-    int right = mid + 1;   // starting index of right half of arr
+/*
+    Algorithm: Merge Sort
+    -----------------------
+    What we are doing:
+    - Divide the array into two halves.
+    - Recursively sort each half.
+    - Merge the sorted halves back together.
 
-    //storing elements in the temporary array in a sorted manner//
+    Time Complexity: O(n log n) (Divide and Conquer)
+*/
 
-    while (left <= mid && right <= high) {
-        if (arr[left] <= arr[right]) {
-            temp.push_back(arr[left]);
-            left++;
-        }
-        else {
-            temp.push_back(arr[right]);
-            right++;
-        }
+// Merge two sorted halves of the array
+void merge(vector<int> &arr, int l, int mid, int r) {
+    vector<int> temp;       // Temporary array to store merged result
+    int i = l, j = mid + 1; // Pointers for left and right halves
+
+    // Compare and merge the elements
+    while (i <= mid && j <= r) {
+        if (arr[i] < arr[j])
+            temp.push_back(arr[i++]);
+        else
+            temp.push_back(arr[j++]);
     }
 
-    // if elements on the left half are still left //
+    // Add remaining elements from left half (if any)
+    while (i <= mid) temp.push_back(arr[i++]);
 
-    while (left <= mid) {
-        temp.push_back(arr[left]);
-        left++;
-    }
+    // Add remaining elements from right half (if any)
+    while (j <= r) temp.push_back(arr[j++]);
 
-    //  if elements on the right half are still left //
-    while (right <= high) {
-        temp.push_back(arr[right]);
-        right++;
-    }
-
-    // transfering all elements from temporary to arr //
-    for (int i = low; i <= high; i++) {
-        arr[i] = temp[i - low];
+    // Copy merged result back to original array
+    for (int k = l; k <= r; k++) {
+        arr[k] = temp[k - l];
     }
 }
 
-void mergeSort(vector<int> &arr, int low, int high) {
-    if (low >= high) return;
-    int mid = (low + high) / 2 ;
-    mergeSort(arr, low, mid);  // left half
-    mergeSort(arr, mid + 1, high); // right half
-    merge(arr, low, mid, high);  // merging sorted halves
+// Recursive function to divide and sort the array
+void mergeSort(vector<int> &arr, int l, int r) {
+    if (l >= r) return; // Base case: one element
+
+    int mid = l + (r - l) / 2; // Find the middle index
+
+    mergeSort(arr, l, mid);       // Sort left half
+    mergeSort(arr, mid + 1, r);   // Sort right half
+    merge(arr, l, mid, r);        // Merge the two halves
 }
 
 int main() {
+    int n;
+    cout << "Enter the number of elements: ";
+    cin >> n;
 
-    vector<int> arr = {9, 4, 7, 6, 3, 1, 5}  ;
-    int n = 7;
+    vector<int> arr(n);
+    cout << "Enter the elements: ";
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
 
-    cout << "Before Sorting Array: " << endl;
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " "  ;
+    mergeSort(arr, 0, arr.size() - 1); // Sort the array
+
+    cout << "Sorted array: ";
+    for (int num : arr) {
+        cout << num << " ";
     }
-    cout << endl;
-    mergeSort(arr, 0, n - 1);
-    cout << "After Sorting Array: " << endl;
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " "  ;
-    }
-    cout << endl;
-    return 0 ;
+
+    return 0;
 }
