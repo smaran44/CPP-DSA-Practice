@@ -8,6 +8,7 @@ public:
     void rotate(vector<int>& nums, int k) {
         vector<int> copy(nums);
         int n = nums.size();
+        k = k % n; // Handle cases where k is greater than n
         for(int i = 0; i < n; i++) {
           nums[(i + k) % n] = copy[i];
         }
